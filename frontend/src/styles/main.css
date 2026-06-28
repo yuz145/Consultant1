@@ -1,0 +1,201 @@
+:root {
+  color-scheme: dark;
+  --bg: #101217;
+  --surface: #161a22;
+  --surface-2: #1d2330;
+  --text: #f1f4f8;
+  --muted: #9ca7b8;
+  --accent: #4fd1c5;
+  --accent-2: #2dd4bf;
+  --border: #2d3442;
+  --danger: #f87171;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at 20% 0%, #17202d, var(--bg) 45%);
+  color: var(--text);
+  font-family: "SF Pro Text", "Hiragino Sans", "Noto Sans JP", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+}
+
+#app {
+  width: min(980px, 100% - 2rem);
+  margin: 1.5rem auto 3rem;
+}
+
+.auth-card,
+.app-shell {
+  background: color-mix(in srgb, var(--surface) 94%, black);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.app-header {
+  margin-bottom: 1rem;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.app-note {
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.top-bar {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tab-button,
+.primary-button,
+.secondary-button {
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 0.58rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+
+.tab-button.is-active {
+  border-color: color-mix(in srgb, var(--accent) 65%, white);
+  color: #071117;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+
+.primary-button {
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  background: linear-gradient(135deg, #1f4646, #1c5550);
+}
+
+.secondary-button {
+  background: #2a3140;
+}
+
+.sign-out {
+  white-space: nowrap;
+}
+
+.app-main {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.card {
+  background: color-mix(in srgb, var(--surface-2) 85%, black);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem;
+}
+
+.card-title {
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+}
+
+.form {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0f131a;
+  color: var(--text);
+  padding: 0.62rem 0.72rem;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.list-item {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem;
+  background: #141925;
+}
+
+.list-title {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.status-text,
+.body-text {
+  margin: 0.3rem 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.answer-block {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.muted {
+  margin: 0.3rem 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 720px) {
+  #app {
+    width: calc(100% - 1rem);
+    margin-top: 0.8rem;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sign-out {
+    width: 100%;
+  }
+
+  .tab-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

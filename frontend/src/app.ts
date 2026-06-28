@@ -44,16 +44,16 @@ function createAuthScreen(onAuthenticated: () => void): HTMLElement {
       return;
     }
 
-    api.setAdminToken(token);
     button.disabled = true;
     status.textContent = "確認中...";
 
     try {
-      await api.getState();
+      await api.postAdminLogin(token);
+      api.setAdminToken(token);
       onAuthenticated();
     } catch (error) {
       api.clearAdminToken();
-      status.textContent = error instanceof Error ? error.message : "認証に失敗しました。";
+      status.textContent = error instanceof Error ? error.message : "トークンが正しくありません";
       button.disabled = false;
     }
   });

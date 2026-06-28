@@ -1,5 +1,10 @@
 import type { Consultation, KeyEvent, RawImport, RelationshipState } from "../types";
 
+interface AdminLoginResponse {
+  success?: boolean;
+  error?: string;
+}
+
 interface ConsultResponse {
   consultation: Consultation;
   usedContext: {
@@ -37,6 +42,43 @@ export class ApiClient {
 
   hasAdminToken(): boolean {
     return Boolean(this.adminToken);
+  }
+
+  async postAdminLogin(token: string): Promise<void> {
+    let response: Response;
+    try {
+      response = await fetch(`${this.baseUrl}/admin/login`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ token })
+      });
+    } catch {
+      throw new Error("APIへの接続に失敗しました。WorkerのURLを確認してください。");
+    }
+
+    let parsed: AdminLoginResponse | undefined;
+    const text = await response.text();
+    if (text) {
+      try {
+        parsed = JSON.parse(text) as AdminLoginResponse;
+      } catch {
+        throw new Error("APIレスポンスのJSON解析に失敗しました。");
+      }
+    }
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("トークンが正しくありません");
+      }
+
+      throw new Error(parsed?.error ?? `APIエラーが発生しました (status: ${response.status})`);
+    }
+
+    if (!parsed?.success) {
+      throw new Error("トークンが正しくありません");
+    }
   }
 
   async getState(): Promise<{ state: RelationshipState }> {

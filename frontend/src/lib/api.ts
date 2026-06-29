@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim() ?? "";
+const API_BASE_URL =
+  __APP_CONFIG__?.VITE_API_BASE_URL?.trim() ?? import.meta.env.VITE_API_BASE_URL?.trim() ?? "";
 
 export function isApiBaseUrlConfigured(): boolean {
   return API_BASE_URL.length > 0;
@@ -40,4 +41,15 @@ export async function readJsonResponse<T>(response: Response): Promise<T> {
   } catch {
     throw new Error("APIレスポンスのJSON解析に失敗しました。");
   }
+}
+
+declare global {
+  interface Window {
+    __APP_CONFIG__?: {
+      VITE_API_BASE_URL?: string;
+    };
+  }
+
+  // eslint-disable-next-line no-var
+  var __APP_CONFIG__: Window["__APP_CONFIG__"];
 }

@@ -1,6 +1,7 @@
 import { ApiClient } from "./api/client";
 import { createHeader } from "./components/layout/header";
 import { createNavTabs } from "./components/layout/nav-tabs";
+import { isApiBaseUrlConfigured } from "./lib/api";
 import { renderConsultationPage } from "./pages/consultation";
 import { renderDashboardPage } from "./pages/dashboard";
 import { renderLogUpdatePage } from "./pages/log-update";
@@ -11,7 +12,7 @@ if (!appRoot) {
   throw new Error("#app element not found");
 }
 
-const api = new ApiClient("");
+const api = new ApiClient();
 
 function createAuthScreen(onAuthenticated: () => void): HTMLElement {
   const section = document.createElement("section");
@@ -23,6 +24,15 @@ function createAuthScreen(onAuthenticated: () => void): HTMLElement {
   const desc = document.createElement("p");
   desc.className = "muted";
   desc.textContent = "ADMIN_TOKEN はこのセッションのメモリのみで保持されます。";
+
+  const nodes: Node[] = [title, desc];
+
+  if (!isApiBaseUrlConfigured()) {
+    const warning = document.createElement("p");
+    warning.className = "muted";
+    warning.textContent = "VITE_API_BASE_URL is not configured";
+    nodes.push(warning);
+  }
 
   const input = document.createElement("input");
   input.type = "password";
@@ -64,7 +74,7 @@ function createAuthScreen(onAuthenticated: () => void): HTMLElement {
     }
   });
 
-  section.append(title, desc, input, button, status);
+  section.append(...nodes, input, button, status);
   return section;
 }
 

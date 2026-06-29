@@ -178,6 +178,7 @@ Workers が以下を担当します。
 想定している環境変数:
 
 ```env
+VITE_API_BASE_URL=
 GEMINI_API_KEY=
 GEMINI_MODEL=
 ADMIN_TOKEN=
@@ -214,9 +215,12 @@ APIキーはフロントエンドに露出させず、Workers 側で利用しま
 	- D1 binding: `DB`
 	- R2 binding: `RAW_LOGS`
 4. 環境変数/シークレットを設定
+	- `VITE_API_BASE_URL` (var, Worker の本番 URL)
 	- `GEMINI_MODEL` (var)
 	- `GEMINI_API_KEY` (secret)
 	- `ADMIN_TOKEN` (secret)
+
+Cloudflare Pages 側では、フロントエンドの `VITE_API_BASE_URL` を Worker の本番 URL に設定してください。これを設定しないと、`/admin/login` などの API 呼び出しが Pages の静的 URL に向いてしまいます。
 
 ### デプロイ後に最初にやること
 

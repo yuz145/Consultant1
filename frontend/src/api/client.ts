@@ -1,4 +1,5 @@
 import type { Consultation, KeyEvent, RawImport, RelationshipState } from "../types";
+import { apiFetch, apiUrl, readJsonResponse } from "../lib/api";
 
 interface AdminLoginResponse {
   success?: boolean;
@@ -25,12 +26,7 @@ interface ImportResponse {
 }
 
 export class ApiClient {
-  private readonly baseUrl: string;
   private adminToken: string | null = null;
-
-  constructor(baseUrl = "https://relationship-advisor-worker.yuz145.workers.dev") {
-    this.baseUrl = baseUrl;
-  }
 
   setAdminToken(token: string): void {
     this.adminToken = token;
@@ -45,9 +41,11 @@ export class ApiClient {
   }
 
   async postAdminLogin(token: string): Promise<void> {
+    console.log("[api] POST", apiUrl("/admin/login"));
+
     let response: Response;
     try {
-      response = await fetch(`${this.baseUrl}/admin/login`, {
+      response = await apiFetch("/admin/login", {
         method: "POST",
         headers: {
           "content-type": "application/json"
@@ -58,15 +56,7 @@ export class ApiClient {
       throw new Error("APIへの接続に失敗しました。WorkerのURLを確認してください。");
     }
 
-    let parsed: AdminLoginResponse | undefined;
-    const text = await response.text();
-    if (text) {
-      try {
-        parsed = JSON.parse(text) as AdminLoginResponse;
-      } catch {
-        throw new Error("APIレスポンスのJSON解析に失敗しました。");
-      }
-    }
+    const parsed = await readJsonResponse<AdminLoginResponse | undefined>(response);
 
     if (!response.ok) {
       if (response.status === 401) {
@@ -137,7 +127,7 @@ export class ApiClient {
 
     let response: Response;
     try {
-      response = await fetch(`${this.baseUrl}${path}`, {
+      response = await apiFetch(path, {
         ...init,
         headers: {
           "content-type": "application/json",
@@ -149,15 +139,7 @@ export class ApiClient {
       throw new Error("APIへの接続に失敗しました。WorkerのURLを確認してください。");
     }
 
-    let parsed: unknown;
-    const text = await response.text();
-    if (text) {
-      try {
-        parsed = JSON.parse(text) as unknown;
-      } catch {
-        throw new Error("APIレスポンスのJSON解析に失敗しました。");
-      }
-    }
+    const parsed = await readJsonResponse<unknown>(response);
 
     if (!response.ok) {
       const message = this.resolveErrorMessage(parsed, response.status);
